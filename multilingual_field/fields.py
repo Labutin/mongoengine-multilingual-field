@@ -21,8 +21,13 @@ class MultilingualStringField(ComplexBaseField):
         return [{'lang': k, 'value': v} for k, v in value.translations.items()]
 
     def to_python(self, value):
-        return MultilingualString(
-            {item['lang']: item['value'] for item in value})
+        ms_value = dict()
+        for item in value:
+            if u'lang' in item:
+                ms_value[item['lang']] = item['value']
+            else:
+                ms_value[item] = value[item]
+        return MultilingualString(ms_value)
 
     def __set__(self, instance, value):
 
